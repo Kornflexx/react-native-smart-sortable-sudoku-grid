@@ -50,6 +50,7 @@ class SortableSudokuGrid extends Component {
         columnCount: PropTypes.number.isRequired,
         dataSource: PropTypes.array.isRequired,
         renderCell: PropTypes.func.isRequired,
+        onOrderChange: PropTypes.func,
         sortable: PropTypes.bool,
     }
 
@@ -535,6 +536,10 @@ class SortableSudokuGrid extends Component {
         this.setState({
             dataSource,
         })
+
+        if (typeof this.props.onOrderChange === 'function') {
+            this.props.onOrderChange(dataSource)
+        }
     }
 
     _removeData = (cellIndex) => {
