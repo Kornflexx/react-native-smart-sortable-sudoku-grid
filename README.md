@@ -8,6 +8,35 @@
 A smart sortable sudoku grid for React Native apps. Written in JS for cross-platform support.
 It works on iOS and Android.
 
+
+**NEW DOCUMENTATION**
+
+dataList:
+```jsx
+
+const dataList = [
+    {
+        draggable: true, // enable drag for the element /!\ any element placed after an undraggable element is undraggable
+        id: 0, // id is used to create react key so it should be unique (can be any type)
+        otherProp: anObject // you can add every props you want in a data
+    },
+    {
+        id: 'my little poney',
+    },
+]
+
+```
+
+additionnal props:
+```jsx
+
+onOrderChange={orderedDataList => {
+    // orderedDataList element aren't modified but just reorder
+}}
+```
+
+
+**/!\ OLD DOCUMENTATION**
 ## Preview
 
 ![react-native-smart-sortable-sudoku-grid-preview][1]

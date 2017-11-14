@@ -50,7 +50,6 @@ export default class SortableCell extends Component {
 	render() {
 		let { columnWidth, rowHeight, data, index, dataList, } = this.props
 		let { x, y, } = this.state.coordinate
-		console.log('Sortable', index, this.state.visible)
 		return (
 			this.state.visible ?
 				<Animated.View
@@ -108,7 +107,7 @@ export default class SortableCell extends Component {
 		let x = this.state.coordinate.x._value
 		let y = this.state.coordinate.y._value
 		let { x: originX, y: originY, } = coordinate
-		//console.log(`startTranslationAnimation -> x=${x}, y=${y}, originX = ${originX}, originY = ${originY}`)
+
 		switch (animationType) {
 			case backToOrigin:
 				x = originX
@@ -130,7 +129,7 @@ export default class SortableCell extends Component {
 				y = y - (rowHeight - (originY - y))
 				break;
 		}
-		//console.log(`translation x = ${x}, y = ${y}, `)
+		
 		return Animated.timing(
 			this.state.coordinate,
 			{
