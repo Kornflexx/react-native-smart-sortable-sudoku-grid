@@ -54,7 +54,7 @@ class SortableSudokuGrid extends Component {
 		sortable: PropTypes.bool,
 	}
 
-	createHeight(props){
+	createHeight(props) {
 		let { columnCount, dataSource, rowWidth, rowHeight, sortable, } = props
 
 		this._rowWidth = rowWidth || deviceWidth
@@ -65,7 +65,7 @@ class SortableSudokuGrid extends Component {
 
 		return new Animated.Value(containerHeight);
 	}
-	constructor (props) {
+	constructor(props) {
 		super(props)
 
 		let { columnCount, dataSource, rowWidth, rowHeight, sortable, } = props
@@ -94,14 +94,14 @@ class SortableSudokuGrid extends Component {
 		this._cells = []
 	}
 
-	componentWillMount () {
+	componentWillMount() {
 
 		this._panResponder = PanResponder.create({
 			onStartShouldSetPanResponder: (e, gestureState) => {
 				//for android, fix the weird conflict between PanRespander and ScrollView
 				return this.state.sortable
 			},
-			onMoveShouldSetPanResponder: (e, {dx, dy}) => {
+			onMoveShouldSetPanResponder: (e, { dx, dy }) => {
 				//for ios/android, fix the conflict between PanRespander and TouchableView
 				return this.state.sortable && dx !== 0 && dy !== 0
 			},
@@ -113,10 +113,10 @@ class SortableSudokuGrid extends Component {
 
 	}
 
-	render () {
+	render() {
 		//this._cells.splice(0, this._cells.length) //clear array, not valid, why?
-				//for (let cell of this._cells) {
-				//}
+		//for (let cell of this._cells) {
+		//}
 		//let {columnCount, dataSource, containerStyle, } = this.props
 		//let containerHeight = (Math.floor(dataSource.length - 1 / columnCount) + 1) * this._rowHeight
 		return (
@@ -128,10 +128,10 @@ class SortableSudokuGrid extends Component {
 					flexDirection: 'column',
 					alignItems: 'stretch',
 					justifyContent: 'flex-start',
-				}, this.props.containerStyle ]}>
+				}, this.props.containerStyle]}>
 				<View
-					style={[styles.container, ]}
-					ref={ component => this._container = component }
+					style={[styles.container,]}
+					ref={component => this._container = component}
 					{...this._panResponder.panHandlers}
 					onLayout={this._onLayout}>
 					{this._renderSortableCells()}
@@ -140,9 +140,9 @@ class SortableSudokuGrid extends Component {
 		)
 	}
 
-	componentWillReceiveProps (nextProps) {
+	componentWillReceiveProps(nextProps) {
 		let { sortable, dataSource, } = nextProps
-		let { sortable: lastSortable,  dataSource: lastDataSource, } = this.props
+		let { sortable: lastSortable, dataSource: lastDataSource, } = this.props
 		let newState
 		if (sortable !== lastSortable) {
 			!newState && (newState = {})
@@ -152,22 +152,22 @@ class SortableSudokuGrid extends Component {
 			!newState && (newState = {})
 			newState.dataSource = dataSource
 		}
-		newState.containerHeight= this.createHeight(nextProps),
-		newState && this.setState(newState)
+		newState.containerHeight = this.createHeight(nextProps),
+			newState && this.setState(newState)
 	}
 
-	componentWillUnmount () {
+	componentWillUnmount() {
 		if (this._animationInstace) {
 			this._animationInstace.stop()
 			this._animationInstace = null
 		}
 	}
 
-	_renderSortableCells () {
+	_renderSortableCells() {
 
 		let { columnCount, } = this.props
 		let { dataSource, } = this.state
-				
+
 		return dataSource.map((data, index, dataList) => {
 			let coordinate = {
 				x: index % columnCount * this._columnWidth,
@@ -176,12 +176,12 @@ class SortableSudokuGrid extends Component {
 
 			return (
 				<SortableCell
-					ref={ (component) => {
-						if(index == dataList.length - 1 && this._cells.length > dataList.length) {
+					ref={(component) => {
+						if (index == dataList.length - 1 && this._cells.length > dataList.length) {
 							this._cells.splice(index + 1, this._cells.length - dataList.length)
 						}
-						return this._cells[index] = {key: data.key, index, coordinate, component,}
-					} }
+						return this._cells[index] = { key: data.key, index, coordinate, component, }
+					}}
 					{...this.props}
 					key={data.id}
 					rowHeight={this._rowHeight}
@@ -190,7 +190,7 @@ class SortableSudokuGrid extends Component {
 					data={data}
 					index={index}
 					dataList={dataList}
-					sortable={this.state.sortable}/>
+					sortable={this.state.sortable} />
 			)
 		})
 	}
@@ -199,7 +199,7 @@ class SortableSudokuGrid extends Component {
 		let { delay, } = containerLayout
 		this.setTimeout(() => {
 			this._container.measure((ox, oy, width, height, px, py) => {
-								this._pageTop = py
+				this._pageTop = py
 				this._pageLeft = px   //sometimes return incorrect value, when using navigator
 				this._width = width
 				this._height = height
@@ -208,29 +208,32 @@ class SortableSudokuGrid extends Component {
 	}
 
 	_onTouchStart = (e, gestureState) => {
-				//compare this._touchDown to fix unexcepted _onTouchStart trigger in specified cases
+		//compare this._touchDown to fix unexcepted _onTouchStart trigger in specified cases
 		if (this._touchDown || !this.state.sortable) {
 			return
 		}
-				let { pageX, pageY, } = e.nativeEvent
+		let { pageX, pageY, } = e.nativeEvent
 		if (!this._responderTimer && !this._currentStartCell && !this._currentDraggingComponent && !this._isRemoving && !this._isAdding) {
 			this._touchDown = true
-						let { delay, } = touchStart
+			let { delay, } = touchStart
+
 			this._responderTimer = this.setTimeout(() => {
 				let draggingCell = this._getTouchCell({
 					x: pageX - this._pageLeft,
 					y: pageY - this._pageTop,
 				})
+
 				if (draggingCell == null || !draggingCell.component.props.data.draggable) {
 					return
 				}
 				this._currentStartCell = draggingCell
 				this._currentDraggingComponent = this._currentStartCell.component
-																draggingCell.component.setCoordinate({
+				draggingCell.component.setCoordinate({
 					x: pageX - this._pageLeft - this._columnWidth / 2,
 					y: pageY - this._pageTop - this._rowHeight / 2,
 				})
-								draggingCell.component.setZIndex(999)
+
+				draggingCell.component.setZIndex(999)
 				draggingCell.component.startScaleAnimation({
 					scaleValue: cellScale.value,
 				})
@@ -239,14 +242,14 @@ class SortableSudokuGrid extends Component {
 	}
 
 	_onTouchMove = (e, gestureState) => {
-				//compare this._touchDown to fix unexcepted _onTouchMove trigger in specified cases
+		//compare this._touchDown to fix unexcepted _onTouchMove trigger in specified cases
 		if (!this._touchDown || !this.state.sortable || !this._currentStartCell || !this._currentDraggingComponent
 			|| !this._currentDraggingComponent.props.data.draggable) {
 			return
 		}
 		let { pageX, pageY, } = e.nativeEvent
 
-				this._currentDraggingComponent.setCoordinate({
+		this._currentDraggingComponent.setCoordinate({
 			x: pageX - this._pageLeft - this._columnWidth / 2,
 			y: pageY - this._pageTop - this._rowHeight / 2,
 		})
@@ -257,11 +260,11 @@ class SortableSudokuGrid extends Component {
 			y: fixed_y,
 		})
 
-		const component = hoverCell.component || hoverCell
-
 		if (hoverCell == null || hoverCell == this._currentStartCell) {
 			return
 		}
+
+		const component = hoverCell.component || hoverCell
 
 		if (component.props && component.props.data && !component.props.data.draggable) {
 			return
@@ -281,9 +284,9 @@ class SortableSudokuGrid extends Component {
 			cellsAnimationOptions,
 		})
 
-				this._cells[ hoverCellIndex ].component = this._currentDraggingComponent
-				this._currentStartCell = hoverCell
-			}
+		this._cells[hoverCellIndex].component = this._currentDraggingComponent
+		this._currentStartCell = hoverCell
+	}
 
 	_onTouchEnd = (e, gestureState) => {
 		this._touchDown = false
@@ -298,12 +301,12 @@ class SortableSudokuGrid extends Component {
 
 		this._touchEnding = true
 
-		
+
 		let animationType = cellAnimationTypes.backToOrigin
 		let cellIndex = this._currentStartCell.index
-				let cell = this._cells[ cellIndex ]
+		let cell = this._cells[cellIndex]
 		let coordinate = cell.coordinate
-				this._currentDraggingComponent.startScaleAnimation({
+		this._currentDraggingComponent.startScaleAnimation({
 			scaleValue: 1,
 		})
 		this._currentDraggingComponent.startTranslationAnimation({
@@ -327,11 +330,11 @@ class SortableSudokuGrid extends Component {
 		let columnWidth = this._columnWidth
 		for (let cell of this._cells) {
 			if (Utils.isPointInPath({
-					touchCoordinate,
-					cellCoordinate: cell.coordinate,
-					cellWidth: columnWidth,
-					cellHeight: rowHeight,
-				})) {
+				touchCoordinate,
+				cellCoordinate: cell.coordinate,
+				cellWidth: columnWidth,
+				cellHeight: rowHeight,
+			})) {
 				return cell
 			}
 		}
@@ -345,12 +348,12 @@ class SortableSudokuGrid extends Component {
 		for (let cellAnimationOption of cellsAnimationOptions) {
 
 			let { cellComponent, cellIndex, animationType, } = cellAnimationOption
-			let changedIndex = ( animationType == rightTranslation
-			|| animationType == leftBottomTranslation ) ? 1 : -1
+			let changedIndex = (animationType == rightTranslation
+				|| animationType == leftBottomTranslation) ? 1 : -1
 
-			
-			this._cells[ cellIndex + changedIndex ].component = cellComponent
-			let cell = this._cells[ cellIndex ]
+
+			this._cells[cellIndex + changedIndex].component = cellComponent
+			let cell = this._cells[cellIndex]
 			let coordinate = cell.coordinate
 			if (!callback) {
 				cellComponent.startTranslationAnimation({
@@ -366,7 +369,7 @@ class SortableSudokuGrid extends Component {
 				animationParallels.push(animation)
 			}
 
-					}
+		}
 
 		callback && Animated.parallel(animationParallels).start(() => {
 			callback && callback()
@@ -381,14 +384,14 @@ class SortableSudokuGrid extends Component {
 		//    return
 		//}
 		//this._isAdding = true
-				let oldDataSourceLength = this.state.dataSource.length
+		let oldDataSourceLength = this.state.dataSource.length
 		let cellChangeType = cellChangeTypes.add
 		this._updateContainerHeight({
 			oldDataSourceLength,
 			cellChangeType,
 			callback: () => {
-				let dataSource = [ ...this.state.dataSource ]
-												dataSource.push(data)
+				let dataSource = [...this.state.dataSource]
+				dataSource.push(data)
 				this.setState({
 					dataSource,
 				})
@@ -406,7 +409,7 @@ class SortableSudokuGrid extends Component {
 		let { columnCount, } = this.props
 		let currentCellIndex = cellIndex
 		let hoverCellIndex = this._cells.length - 1
-						let component = this._cells[ currentCellIndex ].component
+		let component = this._cells[currentCellIndex].component
 		let animationCallBack = () => {
 			let oldDataSourceLength = this.state.dataSource.length
 			let cellChangeType = cellChangeTypes.remove
@@ -422,13 +425,13 @@ class SortableSudokuGrid extends Component {
 			component.startScaleAnimation({
 				scaleValue: 0,
 			})
-						let cellsAnimationOptions = Utils.getCellsAnimationOptions({
+			let cellsAnimationOptions = Utils.getCellsAnimationOptions({
 				currentCellIndex,
 				hoverCellIndex,
 				columnCount,
 				cells: this._cells,
 			})
-									this._sortCells({
+			this._sortCells({
 				cellsAnimationOptions,
 				callback: animationCallBack,
 			})
@@ -443,9 +446,9 @@ class SortableSudokuGrid extends Component {
 	}
 
 	_updateContainerHeight = ({ oldDataSourceLength, cellChangeType, callback, }) => {
-		let newDataSourceLength = oldDataSourceLength + ( cellChangeType == cellChangeTypes.add ? 1 : -1 )
+		let newDataSourceLength = oldDataSourceLength + (cellChangeType == cellChangeTypes.add ? 1 : -1)
 		//if (oldDataSourceLength == 0 || newDataSourceLength == 0) {
-		if (cellChangeType == cellChangeTypes.remove && ( oldDataSourceLength == 0 || newDataSourceLength == 0 )) {
+		if (cellChangeType == cellChangeTypes.remove && (oldDataSourceLength == 0 || newDataSourceLength == 0)) {
 			return
 		}
 		let { columnCount, } = this.props
@@ -459,12 +462,12 @@ class SortableSudokuGrid extends Component {
 			cellIndex,
 			columnCount,
 		})
-						if (oldMaxRowNumber == newMaxRowNumber) {
+		if (oldMaxRowNumber == newMaxRowNumber) {
 			callback && callback()
 			return
 		}
-		let height = (Math.floor((newDataSourceLength - 1) / columnCount) + 1 ) * this._rowHeight
-				if (this._animationInstace) {
+		let height = (Math.floor((newDataSourceLength - 1) / columnCount) + 1) * this._rowHeight
+		if (this._animationInstace) {
 			this._animationInstace.stop()
 			this._animationInstace = null
 		}
@@ -496,7 +499,7 @@ class SortableSudokuGrid extends Component {
 		let dataSource = []
 		for (let cell of this._cells) {
 			let orginalIndex = cell.component.props.index
-			dataSource.push(this.state.dataSource[ orginalIndex ])
+			dataSource.push(this.state.dataSource[orginalIndex])
 		}
 
 		this.setState({
@@ -514,16 +517,16 @@ class SortableSudokuGrid extends Component {
 
 	_removeData = (cellIndex) => {
 		//remove data from dataSource
-		let dataSource = [ ...this.state.dataSource ]
+		let dataSource = [...this.state.dataSource]
 		let removedDataList = dataSource.splice(cellIndex, 1)
-						this.setState({
+		this.setState({
 			dataSource,
 		})
 		return removedDataList
 	}
 
 	getSortedDataSource = () => {
-				return this.state.dataSource
+		return this.state.dataSource
 	}
 
 	//enableSort = () => {
